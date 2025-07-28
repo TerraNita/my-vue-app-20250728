@@ -1,17 +1,28 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <h1>Vue.js 祖父母・親・孫コンポーネント連携</h1>
+    <p>祖父母コンポーネントからのメッセージ: **{{ appMessage }}**</p>
+    <p v-if="receivedMessageFromChild">親コンポーネントから受け取ったメッセージ: **{{ receivedMessageFromChild }}**</p>
+
+    <ParentComponent
+      :messageFromGrandparent="appMessage"
+      @parent-event="handleParentEvent"
+    />
+  </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+import { ref } from 'vue';
+import ParentComponent from './components/ParentComponent.vue';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+const appMessage = ref('こんにちは、App.vueからのメッセージです！');
+const receivedMessageFromChild = ref('');
+
+// 親コンポーネントからのイベントを受け取った時のハンドラ
+const handleParentEvent = (data) => {
+  console.log('祖父母コンポーネントで親からのイベントを受信:', data);
+  receivedMessageFromChild.value = data;
+};
 </script>
 
 <style>
@@ -22,5 +33,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+h1 {
+  color: #34495e;
 }
 </style>

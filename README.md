@@ -1,24 +1,13 @@
-# my-vue-app-20250728
+プロジェクトのディレクトリ構成は以下のようになります（一部抜粋）。
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+my-vue-app/
+├── public/
+│   └── index.html  <-- アプリケーションのエントリポイントとなるHTMLファイル
+├── src/
+│   ├── assets/     <-- 静的ファイル（画像など）
+│   ├── components/ <-- コンポーネントを配置するディレクトリ
+│   │   └── HelloWorld.vue
+│   ├── App.vue     <-- ルートコンポーネント
+│   └── main.js     <-- アプリケーションのエントリポイント（Vueインスタンスの生成など）
+├── package.json    <-- プロジェクトの設定ファイル
+└── ...
