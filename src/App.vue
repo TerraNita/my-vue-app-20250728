@@ -1,28 +1,29 @@
+<!-- src/App.vue -->
 <template>
   <div id="app">
-    <h1>Vue.js 祖父母・親・孫コンポーネント連携</h1>
-    <p>祖父母コンポーネントからのメッセージ: **{{ appMessage }}**</p>
-    <p v-if="receivedMessageFromChild">親コンポーネントから受け取ったメッセージ: **{{ receivedMessageFromChild }}**</p>
+    <h1>Vue.js provide/inject サンプル</h1>
+    <p>App.vueからのメッセージ: **{{ appMessage }}**</p>
 
-    <ParentComponent
-      :messageFromGrandparent="appMessage"
-      @parent-event="handleParentEvent"
-    />
+    <ParentComponent />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
 import ParentComponent from './components/ParentComponent.vue';
 
 const appMessage = ref('こんにちは、App.vueからのメッセージです！');
-const receivedMessageFromChild = ref('');
 
-// 親コンポーネントからのイベントを受け取った時のハンドラ
-const handleParentEvent = (data) => {
-  console.log('祖父母コンポーネントで親からのイベントを受信:', data);
-  receivedMessageFromChild.value = data;
+// provideを使って 'appMessageKey' というキーで appMessage を提供
+// refオブジェクトをそのまま提供することで、孫コンポーネントで参照が維持され、
+// App.vueのappMessageが更新されると、孫コンポーネントの表示も自動的に更新されます。
+provide('appMessageKey', appMessage);
+
+// 孫コンポーネントからメッセージを更新するための関数も提供
+const updateAppMessage = (newMessage) => {
+  appMessage.value = newMessage;
 };
+provide('updateAppMessageKey', updateAppMessage);
 </script>
 
 <style>

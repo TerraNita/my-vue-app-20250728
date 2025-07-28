@@ -1,34 +1,39 @@
 <template>
     <div class="grandchild-component">
       <h3>孫コンポーネント</h3>
-      <p>親からもらったメッセージ: **{{ grandchildMessage }}**</p>
-      <button @click="emitEventToParent">親へイベントを通知</button>
+      <p v-if="injectedMessage">App.vueから注入されたメッセージ: **{{ injectedMessage }}**</p>
+      <p v-else>メッセージは注入されていません。</p>
+  
+      <button @click="changeInjectedMessage">注入されたメッセージを更新 (提供元に通知)</button>
+
+      <p>親からもらったメッセージ: **{{ messageFromParent }}**</p>
+      <button @click="emitMessage">注入されたメッセージを更新 (提供元に通知)</button>
     </div>
   </template>
   
   <script setup>
-  import { defineProps, defineEmits } from 'vue';
+  import { inject, defineEmits } from 'vue'; // defineEmitsは不要
   
-  // 親コンポーネントから受け取るpropsを定義
-  defineProps({
-    grandchildMessage: {
-      type: String,
-      required: true
+  const injectedMessage = inject('appMessageKey', 'デフォルトメッセージ');
+  const updateAppMessage = inject('updateAppMessageKey');
+  
+  const changeInjectedMessage = () => {
+    if (updateAppMessage) {
+      const newMessage = '孫からApp.vueへ更新！ (' + new Date().toLocaleTimeString() + ')';
+      updateAppMessage(newMessage);
+    } else {
+      console.warn('updateAppMessageKey が提供されていません。');
     }
-  });
-  
-  // 親コンポーネントへイベントを発行するためのemitsを定義
-  const emit = defineEmits(['grandchild-event']);
-  
-  // ボタンクリック時にイベントを発行するメソッド
-  const emitEventToParent = () => {
-    console.log('孫コンポーネントからイベントを発行');
-    // イベント名 'grandchild-event' とデータを親に通知
-    emit('grandchild-event', '孫からのデータです！');
   };
+
+  const emitMessage = () => {
+    defineEmits('grandchild-event', '孫からのデータです！');
+  };
+  // propsやemitの関連コードは全て削除
   </script>
   
   <style scoped>
+  /* スタイルは同じで問題なし */
   .grandchild-component {
     border: 1px dashed #35495e;
     padding: 10px;
@@ -37,7 +42,7 @@
     background-color: #f0f8ff;
   }
   button {
-    background-color: #4CAF50; /* Green */
+    background-color: #007bff;
     border: none;
     color: white;
     padding: 8px 16px;
