@@ -1,29 +1,26 @@
+<!-- src/components/ParentComponent.vue -->
 <template>
     <div class="parent-component">
-      <h2>親コンポーネント</h2>
-      <p>私は祖父母と孫の間にいますが、直接データを受け渡していません。</p>
-      <p>★親からもらったメッセージ: **{{ messageFromParent }}**</p>
-      <GrandchildComponent />
 
+      <p v-if="receivedCountFromGrandchild !== null">
+      孫から受け取ったカウント: **{{ receivedCountFromGrandchild }}**
+    </p>
+    <p v-else>まだ孫からカウントは受け取っていません。</p>
+    <GrandchildComponent @increment-count="handleGrandchildCount" />
     </div>
-
   </template>
-
+  
   <script setup>
   import { ref } from 'vue';
   import GrandchildComponent from './GrandchildComponent.vue';
-  // provide/injectのサンプルでは、このParentComponentはデータを受け渡さないため、
-  // definePropsやdefineEmitsは不要です。
-  const messageFromParent = ref('こんにちは、App.vueからのメッセージです！');
+    // 孫コンポーネントから受け取ったカウントを保持するリアクティブな変数
+    const receivedCountFromGrandchild = ref(null);
 
-
-  emit('appMessageKey', messageFromParent);
-
-// 孫コンポーネントからメッセージを更新するための関数も提供
-const updateAppMessage = (newMessage) => {
-  appMessage.value = newMessage;
-};
-provide('updateAppMessageKey', updateAppMessage);
+    // GrandchildComponent から 'update-count' イベントを受け取った時のハンドラ
+    const handleGrandchildCount = (count) => {
+    console.log('親コンポーネントで孫からのカウントを受信:', count);
+    receivedCountFromGrandchild.value = count;
+    };
   </script>
   
   <style scoped>
