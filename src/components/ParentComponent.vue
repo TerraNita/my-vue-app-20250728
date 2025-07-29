@@ -1,26 +1,24 @@
 <!-- src/components/ParentComponent.vue -->
 <template>
     <div class="parent-component">
-
-      <p v-if="receivedCountFromGrandchild !== null">
-      孫から受け取ったカウント: **{{ receivedCountFromGrandchild }}**
-    </p>
-    <p v-else>まだ孫からカウントは受け取っていません。</p>
-    <GrandchildComponent @increment-count="handleGrandchildCount" />
+      <h2>親コンポーネント</h2>
+      <p>孫から受け取ったカウント: **{{ receivedCountFromGrandchild }}**</p>
+      <GrandchildComponent @increment="handleGrandchildCount" />
     </div>
   </template>
   
   <script setup>
   import { ref } from 'vue';
   import GrandchildComponent from './GrandchildComponent.vue';
-    // 孫コンポーネントから受け取ったカウントを保持するリアクティブな変数
-    const receivedCountFromGrandchild = ref(null);
+  
+  // 孫コンポーネントから受け取ったカウントを保持するリアクティブな変数
+  const receivedCountFromGrandchild = ref(0);
 
-    // GrandchildComponent から 'update-count' イベントを受け取った時のハンドラ
-    const handleGrandchildCount = (count) => {
+  // GrandchildComponent から 'increment' イベントを受け取った時のハンドラ
+  const handleGrandchildCount = (count) => {
     console.log('親コンポーネントで孫からのカウントを受信:', count);
     receivedCountFromGrandchild.value = count;
-    };
+  };
   </script>
   
   <style scoped>

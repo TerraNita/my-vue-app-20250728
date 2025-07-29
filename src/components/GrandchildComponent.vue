@@ -8,24 +8,38 @@
   
       <button @click="changeInjectedMessage">注入されたメッセージを更新 (提供元に通知)</button>
 
-      <p>現在のカウント: **{{ currentCount }}**</p>
-      <button @click="incrementCount">親へカウントを渡す (カウントアップ)</button>
+      <h3>孫コンポーネント</h3>
+      <p>現在のカウント: **{{ count }}**</p>
+      <p>ダブルカウント: **{{ doubleCount }}**</p>
+      <button @click="handleIncrement">親へカウントを渡す (カウントアップ)</button>
+      <button @click="handleDecrement">カウントダウン</button>
     </div>
   </template>
   
   <script setup>
-  import { inject ,ref, defineEmits} from 'vue';
-
-  const currentCount = ref(0);
-// 親コンポーネントへイベントを発行するためのemitsを定義
-// 'update-count' というカスタムイベントを定義します
-  const emit = defineEmits(['increment-count']);
-  // ボタンクリック時にカウントを増やし、イベントを発行する関数
-  const incrementCount = () => {
-    currentCount.value++;
-    emit('increment-count', currentCount.value);
-  };
+  import { inject, defineEmits, watch } from 'vue';
+  import { useCounter } from '../composables/useCounter'; // コンポーザブルをインポート
   
+  // useCounter コンポーザブルを利用
+  const { count, increment, decrement, doubleCount } = useCounter(0);
+
+  // 親コンポーネントへイベントを発行するためのemitsを定義
+  const emit = defineEmits(['increment']);
+
+  // カウント値の変更をリアルタイムで親に通知
+  watch(count, (newCount) => {
+    emit('increment', newCount);
+  }, { immediate: true }); // immediate: trueで初期値も送信
+
+  // カウントアップボタンのハンドラ
+  const handleIncrement = () => {
+    increment();
+  };
+
+  // カウントダウンボタンのハンドラ
+  const handleDecrement = () => {
+    decrement();
+  };
 
   // App.vueで提供された 'appMessageKey' を注入
   // 第二引数はデフォルト値。もし提供元がデータを提供しなかった場合にこの値が使われる。
