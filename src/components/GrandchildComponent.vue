@@ -1,82 +1,68 @@
-<!-- src/components/GrandchildComponent.vue -->
 <template>
-    <div class="grandchild-component">
-      <h3>孫コンポーネント</h3>
-      <!-- App.vueから直接注入されたメッセージを表示 -->
-      <p v-if="injectedMessage">App.vueから注入されたメッセージ: **{{ injectedMessage }}**</p>
-      <p v-else>メッセージは注入されていません。</p>
-  
-      <button @click="changeInjectedMessage">注入されたメッセージを更新 (提供元に通知)</button>
+  <div class="grandchild-component">
+    <h3>孫コンポーネント</h3>
+    <p>Piniaストアからのメッセージ: **{{ store.message }}**</p>
 
-      <h3>孫コンポーネント</h3>
-      <p>現在のカウント: **{{ count }}**</p>
-      <p>ダブルカウント: **{{ doubleCount }}**</p>
-      <button @click="handleIncrement">親へカウントを渡す (カウントアップ)</button>
-      <button @click="handleDecrement">カウントダウン</button>
-    </div>
-  </template>
-  
-  <script setup>
-  import { inject, defineEmits, watch } from 'vue';
-  import { useCounter } from '../composables/useCounter'; // コンポーザブルをインポート
-  
-  // useCounter コンポーザブルを利用
-  const { count, increment, decrement, doubleCount } = useCounter(0);
+    <button @click="changeInjectedMessage">注入されたメッセージを更新 (提供元に通知)</button>
 
-  // 親コンポーネントへイベントを発行するためのemitsを定義
-  const emit = defineEmits(['increment']);
+    <h3>孫コンポーネント</h3>
+    <p>現在のカウント: **{{ store.counter }}**</p>
+    <p>ダブルカウント: **{{ store.doubleCount }}**</p>
+    <button @click="handleIncrement">親へカウントを渡す (カウントアップ)</button>
+    <button @click="handleDecrement">カウントダウン</button>
+  </div>
+</template>
 
-  // カウント値の変更をリアルタイムで親に通知
-  watch(count, (newCount) => {
-    emit('increment', newCount);
-  }, { immediate: true }); // immediate: trueで初期値も送信
+<script setup>
+import { defineEmits, watch } from 'vue'; // defineEmitsとwatchをインポート
+import { useStore } from '../store'; // Piniaストアをインポート
 
-  // カウントアップボタンのハンドラ
-  const handleIncrement = () => {
-    increment();
-  };
+// Piniaストアを利用
+const store = useStore();
 
-  // カウントダウンボタンのハンドラ
-  const handleDecrement = () => {
-    decrement();
-  };
+// 親コンポーネントへイベントを発行するためのemitsを定義
+const emit = defineEmits(['increment']);
 
-  // App.vueで提供された 'appMessageKey' を注入
-  // 第二引数はデフォルト値。もし提供元がデータを提供しなかった場合にこの値が使われる。
-  const injectedMessage = inject('appMessageKey', 'デフォルトメッセージ');
-  
-  // App.vueで提供された更新関数を注入
-  const updateAppMessage = inject('updateAppMessageKey');
-  
-  const changeInjectedMessage = () => {
-    if (updateAppMessage) {
-      const newMessage = '孫からApp.vueへ更新！ (' + new Date().toLocaleTimeString() + ')';
-      updateAppMessage(newMessage); // 提供された関数を呼び出してApp.vueのデータを更新
-    } else {
-      console.warn('updateAppMessageKey が提供されていません。');
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .grandchild-component {
-    border: 1px dashed #35495e;
-    padding: 10px;
-    margin-top: 15px;
-    border-radius: 5px;
-    background-color: #f0f8ff;
-  }
-  button {
-    background-color: #007bff; /* Blue */
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  </style>
+// カウント値の変更をリアルタイムで親に通知
+watch(() => store.counter, (newCount) => {
+  emit('increment', newCount);
+});
+
+// カウントアップボタンのハンドラ
+const handleIncrement = () => {
+  store.increment();
+};
+
+// カウントダウンボタンのハンドラ
+const handleDecrement = () => {
+  store.counter--;
+};
+
+const changeInjectedMessage = () => {
+    const newMessage = '孫からPiniaストアを更新！ (' + new Date().toLocaleTimeString() + ')';
+    store.setMessage(newMessage);
+};
+</script>
+
+<style scoped>
+.grandchild-component {
+  border: 1px dashed #35495e;
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 5px;
+  background-color: #f0f8ff;
+}
+button {
+  background-color: #007bff; /* Blue */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+</style>
