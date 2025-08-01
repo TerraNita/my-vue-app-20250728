@@ -1,19 +1,23 @@
+// src/store/index.js
 import { defineStore } from 'pinia'
 
 export const useStore = defineStore('main', {
-    state: () => ({
-        count: 0,
-        message: 'Hello Pinia',
-    }),
-    getters: {
-        doubleCount: (state) => state.count * 2,
+  state: () => ({
+    counter: 0, // "count" を "counter" に修正
+    message: 'Hello Pinia!',
+  }),
+  getters: {
+    doubleCount: (state) => state.counter * 2,
+  },
+  actions: {
+    increment() {
+      this.counter++
     },
-    actions: {
-        increment() {
-            this.count++
-        },
-        setMessage(newMessage) {
-            this.message = newMessage
-        }
+    decrement() { // decrementアクションを追加
+      this.counter--
+    },
+    setMessage(newMessage) {
+      this.message = newMessage
     }
+  }
 })

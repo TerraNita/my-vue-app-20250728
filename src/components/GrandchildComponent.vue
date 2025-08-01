@@ -3,48 +3,45 @@
     <h3>孫コンポーネント</h3>
     <p>Piniaストアからのメッセージ: **{{ store.message }}**</p>
 
-    <button @click="changeInjectedMessage">注入されたメッセージを更新 (提供元に通知)</button>
+    <button @click="updateMessage">メッセージを更新</button>
 
     <h3>孫コンポーネント</h3>
     <p>現在のカウント: **{{ store.counter }}**</p>
     <p>ダブルカウント: **{{ store.doubleCount }}**</p>
-    <button @click="handleIncrement">親へカウントを渡す (カウントアップ)</button>
+    <button @click="handleIncrement">カウントアップ</button>
     <button @click="handleDecrement">カウントダウン</button>
   </div>
 </template>
 
 <script setup>
-import { defineEmits, watch } from 'vue'; // defineEmitsとwatchをインポート
-import { useStore } from '../store'; // Piniaストアをインポート
+import { defineEmits, watch } from 'vue';
+import { useStore } from '../store';
 
-// Piniaストアを利用
 const store = useStore();
 
-// 親コンポーネントへイベントを発行するためのemitsを定義
 const emit = defineEmits(['increment']);
 
-// カウント値の変更をリアルタイムで親に通知
 watch(() => store.counter, (newCount) => {
   emit('increment', newCount);
 });
 
-// カウントアップボタンのハンドラ
 const handleIncrement = () => {
   store.increment();
 };
 
-// カウントダウンボタンのハンドラ
+// handleDecrementでdecrementアクションを呼び出すように修正
 const handleDecrement = () => {
-  store.counter--;
+  store.decrement();
 };
 
-const changeInjectedMessage = () => {
+const updateMessage = () => {
     const newMessage = '孫からPiniaストアを更新！ (' + new Date().toLocaleTimeString() + ')';
     store.setMessage(newMessage);
 };
 </script>
 
 <style scoped>
+/* スタイルは変更なし */
 .grandchild-component {
   border: 1px dashed #35495e;
   padding: 10px;
