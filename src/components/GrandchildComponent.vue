@@ -10,14 +10,16 @@
     <p>ダブルカウント: **{{ store.doubleCount }}**</p>
     <button @click="handleIncrement">カウントアップ</button>
     <button @click="handleDecrement">カウントダウン</button>
+    <p>{{ delayedMessage }}</p>
   </div>
 </template>
 
 <script setup>
-import { defineEmits, watch } from 'vue';
+import { defineEmits, watch, ref } from 'vue';
 import { useStore } from '../store';
 
 const store = useStore();
+const delayedMessage = ref('');
 
 const emit = defineEmits(['increment']);
 
@@ -34,10 +36,18 @@ const handleDecrement = () => {
   store.decrement();
 };
 
-const updateMessage = () => {
+const updateMessage = async () => {
     const newMessage = '孫からPiniaストアを更新！ (' + new Date().toLocaleTimeString() + ')';
     store.setMessage(newMessage);
+
+    delayedMessage.value = 'now counting...';
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    delayedMessage.value = '遅延メッセージ';
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    delayedMessage.value = '遅延メッセージ2';
 };
+
+
 </script>
 
 <style scoped>
