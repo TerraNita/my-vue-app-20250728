@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+  <!-- <div id="app">
     <h1>Vue.js Pinia サンプル</h1>
     <p>App.vueからのメッセージ: **{{ store.message }}**</p>
     <ParentComponent />
-  </div>
+  </div> -->
   <nav>
       <router-link to="/">HomeView</router-link> |
       <router-link to="/aboutView">AboutView</router-link>
@@ -12,10 +12,10 @@
 </template>
 
 <script setup>
-import ParentComponent from './components/ParentComponent.vue';
-import { useStore } from './store'; // Piniaストアをインポート
+// import ParentComponent from './components/ParentComponent.vue';
+// import { useStore } from './store'; // Piniaストアをインポート
 
-const store = useStore();
+// const store = useStore();
 </script>
 
 <style>

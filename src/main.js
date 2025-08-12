@@ -8,7 +8,8 @@ const app = createApp(App)
 // Piniaをインスタンスに適用
 app.use(createPinia())
 
+app.use(router) // ルーターを使用
+
 // Piniaを適用したインスタンスをマウント
 app.mount('#app')
 
-app.use(router) // ルーターを使用
